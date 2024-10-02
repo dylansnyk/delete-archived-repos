@@ -27,3 +27,22 @@ python3 main.py \
   --snyk-org your_snyk_org \
   --delete
 ```
+
+Help:
+```
+python3 main.py --help
+usage: main.py [-h] [-d] [--github-org GITHUB_ORG] [--github-pat GITHUB_PAT] [--snyk-token SNYK_TOKEN] [--snyk-org SNYK_ORG]
+
+Delete all archived GitHub repos in Snyk
+
+options:
+  -h, --help            show this help message and exit
+  -d, --delete          Delete repos in Snyk (a dry run is run by default)
+  --github-org GITHUB_ORG
+                        GitHub org name, as seen in the GitHub repo URL
+  --github-pat GITHUB_PAT
+                        GitHub classic PAT with "Metadata" repository permissions (read) scope
+  --snyk-token SNYK_TOKEN
+                        Snyk API token or service account
+  --snyk-org SNYK_ORG   Snyk Org ID, e.g. 1aaaaaaa-2bbb-3ccc-4ddd-5eeeeeeeeeee
+```
