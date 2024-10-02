@@ -10,7 +10,7 @@ parser.add_argument("--github-org", help = 'GitHub org name, as seen in the GitH
 parser.add_argument("--github-pat", help = 'GitHub classic PAT with "Metadata" repository permissions (read) scope')
 parser.add_argument("--snyk-token", help = 'Snyk API token or service account')
 parser.add_argument("--snyk-org", help = 'Snyk Org ID, e.g. 1aaaaaaa-2bbb-3ccc-4ddd-5eeeeeeeeeee')
-parser.add_argument("-s", "--bypass-ssl", action = 'store_true', help = "Bypass SSL verification (not recommended)")
+parser.add_argument("-s", "--bypass-ssl", action = 'store_true', help = "Bypass SSL verification ")
 
 args = parser.parse_args()
 
