@@ -1,3 +1,5 @@
+![snyk-oss-category](https://github.com/snyk-labs/oss-images/blob/main/oss-example.jpg)
+
 # Delete Archived Repos in Snyk
 
 Clone and install dependencies:
