@@ -20,8 +20,8 @@ SNYK_TOKEN = args.snyk_token
 SNYK_ORG = args.snyk_org
 VERIFY_SSL = not args.bypass_ssl
 
-def get_github_repos():
-    url = f'https://api.github.com/orgs/{GITHUB_ORG}/repos?per_page=100'
+def get_github_repos(page):
+    url = f'https://api.github.com/orgs/{GITHUB_ORG}/repos?per_page=1&page={page}'
 
     headers = {
         'Accept': 'application/vnd.github+json',
@@ -30,6 +30,18 @@ def get_github_repos():
     }
 
     return requests.request("GET", url, headers=headers, data={}, verify=VERIFY_SSL)
+
+def get_all_github_repos():
+    all_repos = []
+    page = 1
+    link = 'rel="next"'
+    while link is None or 'rel="next"' in link:
+        res = get_github_repos(page)
+        link = res.headers.get('Link')
+        all_repos += res.json()
+        page += 1
+    
+    return all_repos
 
 def get_targets_page(next_url):
     headers = {  'Authorization': f'token {SNYK_TOKEN}' }
@@ -51,7 +63,7 @@ def delete_target(target_id):
 
     return requests.request("DELETE", f'https://api.snyk.io/rest/orgs/{SNYK_ORG}/targets/{target_id}?version=2024-09-04', headers=headers, data={}, verify=VERIFY_SSL)
 
-repos = get_github_repos().json()
+repos = get_all_github_repos()
 snyk_targets = get_all_targets()
 
 print("All archived repos:")
