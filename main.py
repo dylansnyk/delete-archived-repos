@@ -10,6 +10,7 @@ parser.add_argument("--github-org", help = 'GitHub org name, as seen in the GitH
 parser.add_argument("--github-pat", help = 'GitHub classic PAT with "Metadata" repository permissions (read) scope')
 parser.add_argument("--snyk-token", help = 'Snyk API token or service account')
 parser.add_argument("--snyk-org", help = 'Snyk Org ID, e.g. 1aaaaaaa-2bbb-3ccc-4ddd-5eeeeeeeeeee')
+parser.add_argument("-s", "--bypass-ssl", action = 'store_true', help = "Bypass SSL verification (not recommended)")
 
 args = parser.parse_args()
 
@@ -17,9 +18,10 @@ GITHUB_ORG = args.github_org
 GITHUB_PAT = args.github_pat
 SNYK_TOKEN = args.snyk_token
 SNYK_ORG = args.snyk_org
+VERIFY_SSL = not args.bypass_ssl
 
 def get_github_repos():
-    url = f'https://api.github.com/orgs/{GITHUB_ORG}/repos'
+    url = f'https://api.github.com/orgs/{GITHUB_ORG}/repos?per_page=100'
 
     headers = {
         'Accept': 'application/vnd.github+json',
@@ -27,12 +29,12 @@ def get_github_repos():
         'X-GitHub-Api-Version': '2022-11-28'
     }
 
-    return requests.request("GET", url, headers=headers, data={})
+    return requests.request("GET", url, headers=headers, data={}, verify=VERIFY_SSL)
 
 def get_targets_page(next_url):
     headers = {  'Authorization': f'token {SNYK_TOKEN}' }
 
-    return requests.request("GET", f'https://api.snyk.io{next_url}', headers=headers, data={})
+    return requests.request("GET", f'https://api.snyk.io{next_url}', headers=headers, data={}, verify=VERIFY_SSL)
 
 def get_all_targets():
     all_targets = []
@@ -47,17 +49,19 @@ def get_all_targets():
 def delete_target(target_id):
     headers = {  'Authorization': f'token {SNYK_TOKEN}' }
 
-    return requests.request("DELETE", f'https://api.snyk.io/rest/orgs/{SNYK_ORG}/targets/{target_id}?version=2024-09-04', headers=headers, data={})
+    return requests.request("DELETE", f'https://api.snyk.io/rest/orgs/{SNYK_ORG}/targets/{target_id}?version=2024-09-04', headers=headers, data={}, verify=VERIFY_SSL)
 
 repos = get_github_repos().json()
 snyk_targets = get_all_targets()
 
+print("All archived repos:")
 archived_repos = set()
 for repo in repos:
     if repo['archived']:
         archived_repos.add(repo['full_name'])
+        print('    ', repo['full_name'])
 
-print("Archived repos in Snyk:")
+print("\nArchived repos in Snyk:")
 archived_repos_in_snyk = []
 for target in snyk_targets:
     target_name = target['attributes']['display_name']
