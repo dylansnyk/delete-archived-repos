@@ -18,7 +18,7 @@ python3 main.py \
   --snyk-org your_snyk_org 
 ```
 
-Delete the archived repos in Snyk:
+After reviewing the repos to be deleted in the previous step, add the `--delete` argument to delete the archived repos in Snyk:
 ```
 python3 main.py \
   --github-org your_github_org_name \
