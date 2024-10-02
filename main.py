@@ -21,7 +21,7 @@ SNYK_ORG = args.snyk_org
 VERIFY_SSL = not args.bypass_ssl
 
 def get_github_repos(page):
-    url = f'https://api.github.com/orgs/{GITHUB_ORG}/repos?per_page=1&page={page}'
+    url = f'https://api.github.com/orgs/{GITHUB_ORG}/repos?per_page=100&page={page}'
 
     headers = {
         'Accept': 'application/vnd.github+json',
